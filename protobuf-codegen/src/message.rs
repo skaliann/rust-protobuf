@@ -465,6 +465,9 @@ impl<'a> MessageGen<'a> {
                                 FieldKind::Oneof(..) => unreachable!(),
                             }
                         };
+                        if field.proto_type == FieldDescriptorProto_Type::TYPE_BYTES {
+                            serde::write_serde_hex_attr(w, &self.customize);
+                        }
                         w.field_decl_vis(
                             vis,
                             &field.rust_name.get(),

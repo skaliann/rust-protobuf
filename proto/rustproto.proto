@@ -22,7 +22,8 @@ extend google.protobuf.FileOptions {
     optional bool serde_derive_all = 17030;
     // Guard serde annotations with cfg attr.
     optional string serde_derive_cfg_all = 17031;
-
+    // Guard serde annotations with cfg attr.
+    optional bool serde_derive_cfg_hex_all = 17032;
     // When true, will only generate codes that works with lite runtime.
     optional bool lite_runtime_all = 17035;
 }
@@ -42,6 +43,8 @@ extend google.protobuf.MessageOptions {
     optional bool serde_derive = 17030;
     // Guard serde annotations with cfg attr.
     optional string serde_derive_cfg = 17031;
+    // Guard serde annotations with cfg attr.
+    optional bool serde_derive_cfg_hex = 17032;
 }
 
 extend google.protobuf.FieldOptions {

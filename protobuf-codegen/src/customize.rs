@@ -20,6 +20,8 @@ pub struct Customize {
     pub serde_derive: Option<bool>,
     /// When `serde_derive` is set, serde annotations will be guarded with `#[cfg(cfg, ...)]`.
     pub serde_derive_cfg: Option<String>,
+    /// Use hex encoding for bytes when using with serde
+    pub serde_derive_cfg_hex: Option<bool>,
     /// Enable lite runtime
     pub lite_runtime: Option<bool>,
     /// Used internally to generate protos bundled in protobuf crate
@@ -65,12 +67,18 @@ impl Customize {
         if let Some(ref v) = that.serde_derive_cfg {
             self.serde_derive_cfg = Some(v.clone());
         }
+
+        if let Some(v) = that.serde_derive_cfg_hex {
+            self.serde_derive_cfg_hex = Some(v);
+        }
+
         if let Some(v) = that.lite_runtime {
             self.lite_runtime = Some(v);
         }
         if let Some(v) = that.inside_protobuf {
             self.inside_protobuf = Some(v);
         }
+
     }
 
     /// Update unset fields of self with fields from other customize
@@ -109,10 +117,10 @@ impl Customize {
                 r.carllerche_bytes_for_string = Some(parse_bool(v)?);
             } else if n == "serde_derive" {
                 r.serde_derive = Some(parse_bool(v)?);
+            } else if n == "serde_derive_cfg_hex" {
+                r.serde_derive_cfg_hex = Some(parse_bool(v)?);
             } else if n == "serde_derive_cfg" {
                 r.serde_derive_cfg = Some(v.to_owned());
-            } else if n == "lite_runtime" {
-                r.lite_runtime = Some(parse_bool(v)?);
             } else if n == "inside_protobuf" {
                 r.inside_protobuf = Some(parse_bool(v)?);
             } else {
@@ -133,6 +141,7 @@ pub fn customize_from_rustproto_for_message(source: &MessageOptions) -> Customiz
     let carllerche_bytes_for_string = rustproto::exts::carllerche_bytes_for_string.get(source);
     let serde_derive = rustproto::exts::serde_derive.get(source);
     let serde_derive_cfg = rustproto::exts::serde_derive_cfg.get(source);
+    let serde_derive_cfg_hex = rustproto::exts::serde_derive_cfg_hex.get(source);
     let lite_runtime = None;
     let inside_protobuf = None;
     Customize {
@@ -143,6 +152,7 @@ pub fn customize_from_rustproto_for_message(source: &MessageOptions) -> Customiz
         carllerche_bytes_for_string,
         serde_derive,
         serde_derive_cfg,
+        serde_derive_cfg_hex,
         lite_runtime,
         inside_protobuf,
         _future_options: (),
@@ -158,6 +168,7 @@ pub fn customize_from_rustproto_for_field(source: &FieldOptions) -> Customize {
         rustproto::exts::carllerche_bytes_for_string_field.get(source);
     let serde_derive = None;
     let serde_derive_cfg = None;
+    let serde_derive_cfg_hex = None;
     let lite_runtime = None;
     let inside_protobuf = None;
     Customize {
@@ -168,6 +179,7 @@ pub fn customize_from_rustproto_for_field(source: &FieldOptions) -> Customize {
         carllerche_bytes_for_string,
         serde_derive,
         serde_derive_cfg,
+        serde_derive_cfg_hex,
         lite_runtime,
         inside_protobuf,
         _future_options: (),
@@ -182,6 +194,7 @@ pub fn customize_from_rustproto_for_file(source: &FileOptions) -> Customize {
     let carllerche_bytes_for_string = rustproto::exts::carllerche_bytes_for_string_all.get(source);
     let serde_derive = rustproto::exts::serde_derive_all.get(source);
     let serde_derive_cfg = rustproto::exts::serde_derive_cfg_all.get(source);
+    let serde_derive_cfg_hex = rustproto::exts::serde_derive_cfg_hex_all.get(source);
     let lite_runtime = rustproto::exts::lite_runtime_all.get(source);
     let inside_protobuf = None;
     Customize {
@@ -192,6 +205,7 @@ pub fn customize_from_rustproto_for_file(source: &FileOptions) -> Customize {
         carllerche_bytes_for_string,
         serde_derive,
         serde_derive_cfg,
+        serde_derive_cfg_hex,
         lite_runtime,
         inside_protobuf,
         _future_options: (),
